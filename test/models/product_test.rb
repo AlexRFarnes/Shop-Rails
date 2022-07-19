@@ -4,7 +4,7 @@
 #
 #  id         :bigint           not null, primary key
 #  code       :string
-#  price      :decimal(10, 2)   default(0.0)
+#  price      :integer          default(0)
 #  stock      :integer          default(0)
 #  title      :string
 #  created_at :datetime         not null
