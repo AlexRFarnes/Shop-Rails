@@ -26,6 +26,9 @@ class Product < ApplicationRecord
     validates :price, length: { in: 3..10, message: "El precio se encuentra fuera de rango (Min: 3, Max: 10" }, if: :has_price?
 
     validate :code_validate
+
+    validates_with ProductValidator
+
     
     def total
         # el precio esta guardado en centavos
