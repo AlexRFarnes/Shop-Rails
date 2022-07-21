@@ -38,6 +38,7 @@ class Product < ApplicationRecord
     # Los scopes se pueden combinar para realizar tareas mas complejas
     scope :available_and_order_price_desc, -> (min = 1) { available(min).order_price_desc }
 
+
     def total
         # el precio esta guardado en centavos
         self.price / 100
@@ -50,6 +51,11 @@ class Product < ApplicationRecord
     def has_price?
         # primero chequear que tenga un precio y luego que sea mayor a 0
         !self.price.nil? && self.price > 0
+    end
+
+    # Metodo de clase se utiliza cuando las consultas sean en extremo complejas para realizarse unicamente con funciones anonimas
+    def self.top_5_available
+        self.available.order_price_desc.limit(5).pluck(:title, :code)
     end
 
     private
