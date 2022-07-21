@@ -29,7 +29,15 @@ class Product < ApplicationRecord
 
     validates_with ProductValidator
 
-    
+    # Usar scopes para registrar consultas pre-establecidas
+    # El metodo scope recibe como primer argumento el nombre del scope, y como segundo argumento una funcion anonima que debe realizar unicamente una sola accion
+    # El metodo scope se encarga de crear un metodo de clase
+    scope :available, -> (min = 1) { where('stock >= ?', min) }
+    scope :order_price_desc, -> { order("price DESC") }
+
+    # Los scopes se pueden combinar para realizar tareas mas complejas
+    scope :available_and_order_price_desc, -> (min = 1) { available(min).order_price_desc }
+
     def total
         # el precio esta guardado en centavos
         self.price / 100
