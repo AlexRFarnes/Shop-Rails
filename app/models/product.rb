@@ -12,11 +12,17 @@
 #
 class Product < ApplicationRecord
 
-    # save
-    before_save :validate_product
-    after_save :send_notification
+    before_create :validate_product
+    after_create :send_notification
+
+    before_update :code_notification_changed, if: :code_changed? # el metodo code_changed? consiste en el nombre del atributo mas '_changed?' y se hereda del ApplicationRecord
+
+    after_update :send_notification_stock, if: :stock_limit?
+    
+    # save runs both on create and update
     after_save :push_notification, if: :discount?
 
+    # El metodo update_attribute omite las validaciones
     validates :title, presence: { message: "Es necesario definir un valor para el titulo" }
     validates :code, presence: { message: "Es necesario definir un valor para el codigo" }
 
@@ -60,6 +66,10 @@ class Product < ApplicationRecord
 
     private
 
+    def stock_limit?
+        self.saved_change_to_stock? && self.stock <= 5
+    end
+
     def code_validate
         if self.code.nil? || self.code.length < 3 
             self.errors.add(:code, "El codigo debe poseer al menos 3 caracteres.")
@@ -79,5 +89,12 @@ class Product < ApplicationRecord
         puts "\n\n\n>>>>>> Un nuevo producto en descuento se encuentra disponible: #{self.title}"
     end
 
+    def code_notification_changed
+        puts "\n\n\n>>>>>> El codigo fue modificado."
+    end
+
+    def send_notification_stock
+        puts "\n\n\n>>>>>> El producto #{self.title} se encuentra escaso en almacen: #{self.stock}."
+    end
 
 end
