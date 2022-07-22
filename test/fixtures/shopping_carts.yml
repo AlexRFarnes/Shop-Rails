@@ -3,6 +3,7 @@
 # Table name: shopping_carts
 #
 #  id         :bigint           not null, primary key
+#  active     :boolean          default(FALSE)
 #  total      :integer          default(0)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
