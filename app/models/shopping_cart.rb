@@ -21,4 +21,22 @@ class ShoppingCart < ApplicationRecord
   # atributo user generado de manera automatica que hace referencia al modelo user
   belongs_to :user
   has_many :shopping_cart_products
+
+  def format_total
+    self.total / 100
+  end
+
+  def update_total!
+    self.update(total: self.get_total)
+  end
+
+  def get_total
+    total = 0
+    self.shopping_cart_products.includes(:product).each do |scp|
+      total += scp.product.price
+    end
+
+    total
+  end
+
 end
