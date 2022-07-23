@@ -11,6 +11,7 @@
 #  updated_at :datetime         not null
 #
 class Product < ApplicationRecord
+    has_many :shopping_cart_products
 
     before_create :validate_product
     after_create :send_notification

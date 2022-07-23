@@ -20,4 +20,5 @@
 class ShoppingCart < ApplicationRecord
   # atributo user generado de manera automatica que hace referencia al modelo user
   belongs_to :user
+  has_many :shopping_cart_products
 end
