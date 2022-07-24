@@ -32,15 +32,22 @@ class ShoppingCart < ApplicationRecord
   end
 
   def get_total
-    total = 0
-    # self.shopping_cart_products.includes(:product).each do |scp|
-    #   total += scp.product.price
-    # end
-    self.products.each do |product|
-      total += product.price
-    end
-
-    total
+    ShoppingCart.joins(:shopping_cart_products)
+    .joins(:products)
+    .where(shopping_carts: { id: self.id })
+    .select('SUM(products.price) AS total')[0].total
   end
+
+  # def get_total
+  #   total = 0
+  #   # self.shopping_cart_products.includes(:product).each do |scp|
+  #   #   total += scp.product.price
+  #   # end
+  #   self.products.each do |product|
+  #     total += product.price
+  #   end
+
+  #   total
+  # end
 
 end
