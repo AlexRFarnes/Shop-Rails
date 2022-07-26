@@ -39,6 +39,13 @@ class ShoppingCart < ApplicationRecord
     .select('SUM(products.price) AS total')[0].total
   end
 
+  def products_in_cart
+    Product.joins(:shopping_cart_products)
+    .where(shopping_cart_products: {shopping_cart_id: self.id })
+    .group('products.id')
+    .select('COUNT(products.id) AS quantity, products.id, products.title, products.price')
+  end
+
   # def get_total
   #   total = 0
   #   # self.shopping_cart_products.includes(:product).each do |scp|
