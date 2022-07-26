@@ -11,6 +11,7 @@
 #  updated_at :datetime         not null
 #
 class Product < ApplicationRecord
+    include ActionView::Helpers::NumberHelper
     has_many :shopping_cart_products
 
     before_create :validate_product
@@ -48,7 +49,11 @@ class Product < ApplicationRecord
 
     def total
         # el precio esta guardado en centavos
-        self.price / 100
+        self.price / 100.0
+    end
+
+    def total_format
+        number_to_currency(self.total)
     end
 
     def discount?
