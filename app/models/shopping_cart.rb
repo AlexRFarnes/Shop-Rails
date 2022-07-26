@@ -32,19 +32,22 @@ class ShoppingCart < ApplicationRecord
   end
 
   def get_total
-    ShoppingCart.joins(:shopping_cart_products) # joins es un metodo de clase y por default implementa un inner join
-    .joins(:products)
-    .where(shopping_carts: { id: self.id })
-    .group(:shopping_cart_products)
-    .select('SUM(products.price) AS total')[0].total
+    # ShoppingCart.joins(:shopping_cart_products) # joins es un metodo de clase y por default implementa un inner join
+    # .joins(:products)
+    # .where(shopping_carts: { id: self.id })
+    # .group(:shopping_cart_products)
+    # .select('SUM(products.price) AS total')[0].total
+    Product.joins(:shopping_cart_products)
+    .where(shopping_cart_products: { shopping_cart_id: self.id })
+    .select('SUM(products.price * shopping_cart_products.quantity) AS t')[0].t
   end
 
-  def products_in_cart
-    Product.joins(:shopping_cart_products)
-    .where(shopping_cart_products: {shopping_cart_id: self.id })
-    .group('products.id')
-    .select('COUNT(products.id) AS quantity, products.id, products.title, products.price')
-  end
+  # def products_in_cart
+  #   Product.joins(:shopping_cart_products)
+  #   .where(shopping_cart_products: {shopping_cart_id: self.id })
+  #   .group('products.id')
+  #   .select('COUNT(products.id) AS quantity, products.id, products.title, products.price')
+  # end
 
   # def get_total
   #   total = 0

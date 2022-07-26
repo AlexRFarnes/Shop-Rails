@@ -3,6 +3,7 @@
 # Table name: shopping_cart_products
 #
 #  id               :bigint           not null, primary key
+#  quantity         :integer          default(1)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  product_id       :bigint           not null
@@ -24,6 +25,8 @@ class ShoppingCartProduct < ApplicationRecord
 
   after_create :update_total!
   after_destroy :update_total!
+
+  after_update :update_total!
 
   private
 
