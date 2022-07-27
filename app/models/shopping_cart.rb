@@ -19,6 +19,9 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class ShoppingCart < ApplicationRecord
+
+  include AASM
+
   # atributo user generado de manera automatica que hace referencia al modelo user
   belongs_to :user
   has_many :shopping_cart_products
@@ -26,12 +29,47 @@ class ShoppingCart < ApplicationRecord
 
   enum status: [:created, :canceled, :paid, :completed]
 
+  aasm column: 'status' do 
+    state :created, initial: true
+    state :canceled
+    state :paid
+    state :completed
+
+    event :cancel do 
+      transitions from: :created, to: :canceled
+    end
+
+    event :pay do 
+      transitions from: :created, to: :paid
+    end
+
+    event :complete do
+      transitions from: :paid, to: :completed
+    end
+
+  end
+
   def format_total
     self.total / 100
   end
 
   def update_total!
     self.update(total: self.get_total)
+  end
+
+  def paid!
+    ActiveRecord::Base.transaction do 
+      self.update!(status: :paid)
+  
+      self.products.each do |product|
+        quantity = ShoppingCartProduct.find_by(shopping_cart_id: self.id, product_id: product.id).quantity
+
+        product.with_lock do 
+          product.update!(stock: product.stock - quantity)
+        end
+      end
+    
+    end
   end
 
   def get_total
