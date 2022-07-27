@@ -35,7 +35,12 @@ class ShoppingCart < ApplicationRecord
     state :paid
     state :completed
 
+    before_all_transactions :before_transaction
+    after_all_transactions :after_transaction
+
     event :cancel do 
+      before_transaction :before_cancel
+      after_transaction :after_cancel
       transitions from: :created, to: :canceled
     end
 
@@ -101,5 +106,23 @@ class ShoppingCart < ApplicationRecord
 
   #   total
   # end
+
+  private
+  
+  def before_cancel
+    puts "\n\n\n>>>>> La compra sera cancelada!"
+  end
+
+  def after_cancel
+    puts "\n\n\n>>>>> La compra fue cancelada!"
+  end
+
+  def before_transaction
+    puts "\n\n\n>>>>> Un cambio sera llevado a cabo!"
+  end
+
+  def after_transaction
+    puts "\n\n\n>>>>> Un cambio fue llevado a cabo!"
+  end
 
 end
