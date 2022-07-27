@@ -4,6 +4,7 @@
 #
 #  id         :bigint           not null, primary key
 #  active     :boolean          default(FALSE)
+#  status     :integer          default(0)
 #  total      :integer          default(0)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -22,6 +23,8 @@ class ShoppingCart < ApplicationRecord
   belongs_to :user
   has_many :shopping_cart_products
   has_many :products, through: :shopping_cart_products
+
+  enum status: [:created, :canceled, :paid, :completed]
 
   def format_total
     self.total / 100
